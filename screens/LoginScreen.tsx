@@ -14,6 +14,17 @@ type Props = {
 export default function LoginScreen({ onNavigate }: Props) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
+
+  const handleLogin = () => {
+    if (!email.trim() || !password.trim()) {
+      setError('Please enter your email and password.');
+      return;
+    }
+
+    setError('');
+    onNavigate('home');
+  };
 
   return (
     <View style={styles.container}>
@@ -35,7 +46,10 @@ export default function LoginScreen({ onNavigate }: Props) {
         keyboardType="email-address"
         autoCapitalize="none"
         value={email}
-        onChangeText={setEmail}
+        onChangeText={(value) => {
+          setEmail(value);
+          setError('');
+        }}
       />
 
       <Text style={styles.label}>Password</Text>
@@ -45,7 +59,10 @@ export default function LoginScreen({ onNavigate }: Props) {
         placeholderTextColor="#9AA6BA"
         secureTextEntry
         value={password}
-        onChangeText={setPassword}
+        onChangeText={(value) => {
+          setPassword(value);
+          setError('');
+        }}
       />
 
       <TouchableOpacity
@@ -55,21 +72,21 @@ export default function LoginScreen({ onNavigate }: Props) {
         <Text style={styles.forgotText}>Forgot Password?</Text>
       </TouchableOpacity>
 
+      {error !== '' && (
+        <Text style={styles.error}>{error}</Text>
+      )}
+
       <TouchableOpacity
         style={styles.button}
-        onPress={() => {
-          if (email.trim() && password.trim()) {
-            alert('Login screen demo');
-          } else {
-            alert('Please enter your email and password.');
-          }
-        }}
+        onPress={handleLogin}
       >
         <Text style={styles.buttonText}>Log In</Text>
       </TouchableOpacity>
 
       <View style={styles.footer}>
-        <Text style={styles.footerText}>Don't have an account? </Text>
+        <Text style={styles.footerText}>
+          Don't have an account?{' '}
+        </Text>
         <TouchableOpacity onPress={() => onNavigate('signup')}>
           <Text style={styles.link}>Sign Up</Text>
         </TouchableOpacity>
@@ -129,6 +146,11 @@ const styles = StyleSheet.create({
   forgotText: {
     color: '#3478F6',
     fontWeight: '600',
+  },
+  error: {
+    color: '#E53935',
+    fontSize: 13,
+    marginTop: 12,
   },
   button: {
     backgroundColor: '#3478F6',
