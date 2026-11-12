@@ -49,7 +49,11 @@ const doctors = [
   },
 ];
 
-export default function HomeScreen() {
+type HomeScreenProps = {
+  onNavigate: (screen: string) => void;
+};
+
+export default function HomeScreen({ onNavigate }: HomeScreenProps) {
   const [search, setSearch] = useState('');
   const [selectedDay, setSelectedDay] = useState(11);
   const [favorites, setFavorites] = useState<number[]>([]);
@@ -70,10 +74,9 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
+      <StatusBar barStyle="dark-content" />
 
       <ScrollView showsVerticalScrollIndicator={false}>
-        {/* Header */}
         <View style={styles.header}>
           <View style={styles.avatar}>
             <Text style={styles.avatarText}>JD</Text>
@@ -93,7 +96,6 @@ export default function HomeScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* Doctors and Favorites */}
         <View style={styles.quickActions}>
           <TouchableOpacity style={styles.quickButton}>
             <Text style={styles.quickIcon}>♧</Text>
@@ -106,7 +108,6 @@ export default function HomeScreen() {
           </TouchableOpacity>
         </View>
 
-        {/* Search */}
         <View style={styles.searchBox}>
           <Text style={styles.searchIcon}>⌕</Text>
           <TextInput
@@ -118,7 +119,6 @@ export default function HomeScreen() {
           />
         </View>
 
-        {/* Calendar */}
         <View style={styles.calendarSection}>
           <Text style={styles.sectionTitle}>November 2026</Text>
 
@@ -159,7 +159,6 @@ export default function HomeScreen() {
             ))}
           </View>
 
-          {/* Appointment */}
           <View style={styles.appointment}>
             <Text style={styles.appointmentTitle}>
               {selectedDay} November - Appointment
@@ -180,7 +179,6 @@ export default function HomeScreen() {
           </View>
         </View>
 
-        {/* Doctors List */}
         <View style={styles.doctorsSection}>
           <Text style={styles.sectionTitle}>Popular Doctors</Text>
 
@@ -216,7 +214,7 @@ export default function HomeScreen() {
                 style={styles.favoriteButton}
               >
                 <Text style={styles.favoriteIcon}>
-                  {favorites.includes(doctor.id) ? '♥' : '♡'}
+                  {favorites.includes(doctor.id) ? '♥️' : '♡'}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -230,7 +228,6 @@ export default function HomeScreen() {
         </View>
       </ScrollView>
 
-      {/* Bottom Navigation */}
       <View style={styles.bottomNav}>
         {[
           { name: 'Home', icon: '⌂' },
@@ -241,7 +238,13 @@ export default function HomeScreen() {
           <TouchableOpacity
             key={tab.name}
             style={styles.navItem}
-            onPress={() => setActiveTab(tab.name)}
+            onPress={() => {
+              setActiveTab(tab.name);
+
+              if (tab.name === 'Profile') {
+                onNavigate('profile');
+              }
+            }}
           >
             <Text
               style={[
