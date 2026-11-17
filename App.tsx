@@ -6,7 +6,6 @@ import LoginScreen from './screens/LoginScreen';
 import SignUpScreen from './screens/SignUpScreen';
 import ResetPasswordScreen from './screens/ResetPasswordScreen';
 import HomeScreen from './screens/HomeScreen';
-import ProfileScreen from './screens/ProfileScreen';
 
 export default function App() {
   const [screen, setScreen] = useState('welcome');
@@ -29,13 +28,7 @@ export default function App() {
         <ResetPasswordScreen onNavigate={setScreen} />
       )}
 
-      {screen === 'home' && (
-        <HomeScreen onNavigate={setScreen} />
-      )}
-
-      {screen === 'profile' && (
-        <ProfileScreen onNavigate={setScreen} />
-      )}
+      {screen === 'home' && <HomeScreen />}
     </View>
   );
 }
