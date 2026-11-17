@@ -244,10 +244,6 @@ export default function HomeScreen({ onNavigate }: HomeScreenProps) {
               if (tab.name === 'Profile') {
                 onNavigate('profile');
               }
-
-              if (tab.name === 'Calendar') {
-                onNavigate('appointment');
-              }
             }}
           >
             <Text
