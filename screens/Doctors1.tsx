@@ -1,39 +1,37 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TextInput, TouchableOpacity, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TextInput, TouchableOpacity, SafeAreaView, Image } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 
 const CATEGORIES = ['All', 'General', 'Cardiologist', 'Dermatologist', 'Pediatrician'];
 
 const DOCTORS = [
   { 
     id: '1', 
-    name: 'Dr. Marcus Horizon', 
-    specialty: 'Cardiologist', 
-    rating: '4.8', 
-    reviews: '1,245',
-    distance: '800m away',
-    availability: 'Available Today'
+    name: 'Dr. Alexander Bennett, Ph.D.', 
+    specialty: 'Dermato-Genetics', 
+    rating: '4.5', 
+    reviews: '40',
+    image: 'https://randomuser.me/api/portraits/men/32.jpg' // Аватарка
   },
   { 
     id: '2', 
-    name: 'Dr. Maria Elena', 
-    specialty: 'Psychologist', 
-    rating: '4.9', 
-    reviews: '958',
-    distance: '1.5km away',
-    availability: 'Available Tomorrow'
+    name: 'Dr. Olivia Turner, M.D.', 
+    specialty: 'Dermato-Endocrinology', 
+    rating: '5.0', 
+    reviews: '60',
+    image: 'https://randomuser.me/api/portraits/women/44.jpg' // Аватарка
   },
   { 
     id: '3', 
-    name: 'Dr. Stefi Jessi', 
-    specialty: 'Orthopedic', 
-    rating: '4.7', 
-    reviews: '742',
-    distance: '2.0km away',
-    availability: 'Available Today'
+    name: 'Dr. Sophia Martinez, Ph.D.', 
+    specialty: 'Cosmetic Bioengineering', 
+    rating: '5.0', 
+    reviews: '150',
+    image: 'https://randomuser.me/api/portraits/women/68.jpg' // Аватарка
   },
 ];
 
-export default function Doctors1() {
+export default function Doctors1({ onNavigate }: any) {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
 
@@ -41,20 +39,21 @@ export default function Doctors1() {
     <SafeAreaView style={styles.container}>
       {/* Жоғарғы тақырып */}
       <View style={styles.header}>
-        <View>
-          <Text style={styles.greeting}>Location</Text>
-          <Text style={styles.location}>Seattle, USA 📍</Text>
-        </View>
-        <TouchableOpacity style={styles.notificationBtn}>
-          <Text style={styles.notificationIcon}>🔔</Text>
+        <TouchableOpacity onPress={() => onNavigate && onNavigate('home')}>
+          <Ionicons name="arrow-back" size={24} color="#1B1C8C" />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Doctors</Text>
+        <TouchableOpacity>
+           <Ionicons name="options-outline" size={24} color="#1B1C8C" />
         </TouchableOpacity>
       </View>
 
       {/* Іздеу жолағы */}
       <View style={styles.searchContainer}>
+        <Ionicons name="search" size={20} color="#A0A5BA" style={{ marginRight: 10 }} />
         <TextInput
           style={styles.searchInput}
-          placeholder="Search doctor, drugs, articles..."
+          placeholder="Search..."
           placeholderTextColor="#A0A5BA"
           value={searchQuery}
           onChangeText={setSearchQuery}
@@ -92,10 +91,7 @@ export default function Doctors1() {
       {/* Дәрігерлер тізімі */}
       <View style={styles.listContainer}>
         <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Top Doctors</Text>
-          <TouchableOpacity>
-            <Text style={styles.seeAllText}>See all</Text>
-          </TouchableOpacity>
+          <Text style={styles.sectionTitle}>Popular Doctors</Text>
         </View>
 
         <FlatList
@@ -103,18 +99,23 @@ export default function Doctors1() {
           keyExtractor={(item) => item.id}
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => (
-            <View style={styles.card}>
-              <View style={styles.avatarPlaceholder} />
+            <TouchableOpacity style={styles.card}>
+              {/* Аватарка */}
+              <Image source={{ uri: item.image }} style={styles.avatar} />
+              
               <View style={styles.cardInfo}>
                 <Text style={styles.doctorName}>{item.name}</Text>
                 <Text style={styles.doctorSpecialty}>{item.specialty}</Text>
                 <View style={styles.ratingRow}>
-                  <Text style={styles.ratingText}>⭐ {item.rating}</Text>
-                  <Text style={styles.distanceText}> • 📍 {item.distance}</Text>
+                  <Ionicons name="star" size={14} color="#1B1C8C" />
+                  <Text style={styles.ratingText}>{item.rating}</Text>
+                  <Text style={styles.dot}> • </Text>
+                  <Text style={styles.reviewsText}>{item.reviews}</Text>
                 </View>
-                <Text style={styles.availabilityText}>{item.availability}</Text>
               </View>
-            </View>
+              
+              <Ionicons name="heart-outline" size={24} color="#1B1C8C" style={styles.heartIcon} />
+            </TouchableOpacity>
           )}
         />
       </View>
@@ -125,7 +126,7 @@ export default function Doctors1() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#FAFBFF', // Ақшыл көк фон
     paddingHorizontal: 20,
     paddingTop: 10,
   },
@@ -134,42 +135,28 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 20,
+    marginTop: 10,
   },
-  greeting: {
-    fontSize: 12,
-    color: '#717786',
-  },
-  location: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#1A1C1E',
-    marginTop: 2,
-  },
-  notificationBtn: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#F7F8F9',
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#EDF1F3',
-  },
-  notificationIcon: {
+  headerTitle: {
     fontSize: 18,
+    fontWeight: 'bold',
+    color: '#1B1C8C', // Негізгі көк түс
   },
   searchContainer: {
-    marginBottom: 20,
-  },
-  searchInput: {
-    backgroundColor: '#F7F8F9',
-    paddingVertical: 14,
+    flexDirection: 'row',
+    backgroundColor: '#FFFFFF',
+    paddingVertical: 12,
     paddingHorizontal: 16,
     borderRadius: 12,
+    marginBottom: 20,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#E0E4F5',
+  },
+  searchInput: {
+    flex: 1,
     fontSize: 14,
     color: '#1A1C1E',
-    borderWidth: 1,
-    borderColor: '#EDF1F3',
   },
   categoriesContainer: {
     marginBottom: 20,
@@ -178,20 +165,18 @@ const styles = StyleSheet.create({
   categoryChip: {
     paddingHorizontal: 20,
     paddingVertical: 10,
-    backgroundColor: '#F7F8F9',
+    backgroundColor: '#F3F4F8',
     borderRadius: 20,
     marginRight: 10,
     justifyContent: 'center',
     alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#EDF1F3',
   },
   selectedCategoryChip: {
-    backgroundColor: '#0EBE7FF', // Фигма дизайнындағы негізгі жасыл не көк түс
+    backgroundColor: '#1B1C8C', // Белсенді санаттың түсі
   },
   categoryText: {
     fontSize: 14,
-    color: '#717786',
+    color: '#6E7A9A',
     fontWeight: '500',
   },
   selectedCategoryText: {
@@ -210,66 +195,56 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#1A1C1E',
-  },
-  seeAllText: {
-    fontSize: 14,
-    color: '#0EBE7E',
-    fontWeight: '600',
+    color: '#1B1C8C',
   },
   card: {
     flexDirection: 'row',
-    backgroundColor: '#FFFFFF',
-    padding: 12,
-    borderRadius: 16,
+    backgroundColor: '#E3E8F8', // Figma-дағы карточка түсі
+    padding: 15,
+    borderRadius: 20,
     marginBottom: 15,
-    borderWidth: 1,
-    borderColor: '#EDF1F3',
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.03,
-    shadowRadius: 8,
-    elevation: 2,
   },
-  avatarPlaceholder: {
-    width: 70,
-    height: 70,
-    borderRadius: 12,
-    backgroundColor: '#E8ECEF',
+  avatar: {
+    width: 65,
+    height: 65,
+    borderRadius: 32.5,
     marginRight: 15,
+    backgroundColor: '#D1D9F0', // Сурет жүктелгенше тұратын түс
   },
   cardInfo: {
     flex: 1,
   },
   doctorName: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: 'bold',
-    color: '#1A1C1E',
-    marginBottom: 2,
+    color: '#1B1C8C',
+    marginBottom: 4,
   },
   doctorSpecialty: {
-    fontSize: 13,
-    color: '#717786',
+    fontSize: 12,
+    color: '#6E7A9A',
     marginBottom: 6,
   },
   ratingRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 6,
   },
   ratingText: {
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: 'bold',
-    color: '#FFC107',
+    color: '#1B1C8C',
+    marginLeft: 4,
   },
-  distanceText: {
-    fontSize: 12,
-    color: '#717786',
+  dot: {
+    fontSize: 14,
+    color: '#6E7A9A',
   },
-  availabilityText: {
-    fontSize: 11,
-    color: '#0EBE7E',
-    fontWeight: '600',
+  reviewsText: {
+    fontSize: 13,
+    color: '#6E7A9A',
   },
+  heartIcon: {
+    padding: 5,
+  }
 });
