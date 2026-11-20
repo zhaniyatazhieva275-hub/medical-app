@@ -12,6 +12,18 @@ import {
 
 import CurrencyCard from '../components/CurrencyCard';
 
+type MedicalExpense = {
+  id: string;
+  title: string;
+  category: string;
+  amount: number;
+};
+
+type HomeScreenProps = {
+  onNavigate: (screen: string) => void;
+  expenses: MedicalExpense[];
+};
+
 const doctors = [
   {
     id: 1,
@@ -51,48 +63,23 @@ const doctors = [
   },
 ];
 
-type MedicalExpense = {
-  id: number;
-  title: string;
-  amount: number;
-};
-
-const medicalExpenses: MedicalExpense[] = [
-  {
-    id: 1,
-    title: 'Дәрі-дәрмек',
-    amount: 2500,
-  },
-  {
-    id: 2,
-    title: 'Дәрігер қабылдауы',
-    amount: 5000,
-  },
-  {
-    id: 3,
-    title: 'Медициналық талдау',
-    amount: 1800,
-  },
-];
-
-type HomeScreenProps = {
-  onNavigate: (screen: string) => void;
-};
-
-export default function HomeScreen({ onNavigate }: HomeScreenProps) {
+export default function HomeScreen({
+  onNavigate,
+  expenses,
+}: HomeScreenProps) {
   const [search, setSearch] = useState('');
   const [selectedDay, setSelectedDay] = useState(11);
   const [favorites, setFavorites] = useState<number[]>([]);
   const [activeTab, setActiveTab] = useState('Home');
 
-  const totalMedicalExpenses = medicalExpenses.reduce(
-    (sum, expense) => sum + expense.amount,
-    0
-  );
-
   const filteredDoctors = doctors.filter((doctor) =>
     doctor.name.toLowerCase().includes(search.toLowerCase()) ||
     doctor.specialty.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const totalMedicalExpenses = expenses.reduce(
+    (total, expense) => total + expense.amount,
+    0
   );
 
   const toggleFavorite = (id: number) => {
@@ -137,33 +124,77 @@ export default function HomeScreen({ onNavigate }: HomeScreenProps) {
             <Text style={styles.quickIcon}>♡</Text>
             <Text style={styles.quickText}>Favorite</Text>
           </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.quickButton}
+            onPress={() => onNavigate('addExpense')}
+          >
+            <Text style={styles.quickIcon}>＋</Text>
+            <Text style={styles.quickText}>Add expense</Text>
+          </TouchableOpacity>
         </View>
 
-        {/* Medical Expenses and Currency API */}
+        {/* Medical expenses */}
         <View style={styles.expensesSection}>
-          <Text style={styles.sectionTitle}>Medical Expenses</Text>
+          <View style={styles.expensesHeader}>
+            <Text style={styles.expensesTitle}>Medical Expenses</Text>
 
-          <View style={styles.expenseTotal}>
-            <Text style={styles.expenseLabel}>Total expenses</Text>
+            <TouchableOpacity
+              style={styles.addExpenseButton}
+              onPress={() => onNavigate('addExpense')}
+            >
+              <Text style={styles.addExpenseButtonText}>+ Add</Text>
+            </TouchableOpacity>
+          </View>
 
-            <Text style={styles.expenseAmount}>
+          <View style={styles.totalCard}>
+            <Text style={styles.totalLabel}>Total medical expenses</Text>
+            <Text style={styles.totalAmount}>
               {totalMedicalExpenses.toLocaleString('ru-RU')} ₸
+            </Text>
+            <Text style={styles.totalDescription}>
+              {expenses.length} expense(s) added
             </Text>
           </View>
 
-          {medicalExpenses.map((expense) => (
-            <View key={expense.id} style={styles.expenseItem}>
-              <Text style={styles.expenseTitle}>
-                {expense.title}
-              </Text>
+          {expenses.length > 0 ? (
+            <View style={styles.expenseList}>
+              {expenses.map((expense) => (
+                <View key={expense.id} style={styles.expenseItem}>
+                  <View style={styles.expenseIcon}>
+                    <Text style={styles.expenseIconText}>✚</Text>
+                  </View>
 
-              <Text style={styles.expensePrice}>
-                {expense.amount.toLocaleString('ru-RU')} ₸
+                  <View style={styles.expenseDetails}>
+                    <Text style={styles.expenseName}>
+                      {expense.title}
+                    </Text>
+                    <Text style={styles.expenseCategory}>
+                      {expense.category}
+                    </Text>
+                  </View>
+
+                  <Text style={styles.expenseAmount}>
+                    {expense.amount.toLocaleString('ru-RU')} ₸
+                  </Text>
+                </View>
+              ))}
+            </View>
+          ) : (
+            <View style={styles.emptyExpenses}>
+              <Text style={styles.emptyExpensesText}>
+                No expenses yet.
+              </Text>
+              <Text style={styles.emptyExpensesDescription}>
+                Add your first medical expense.
               </Text>
             </View>
-          ))}
+          )}
 
-          <View style={styles.currencyContainer}>
+          <View style={styles.currencySection}>
+            <Text style={styles.currencyTitle}>
+              Currency conversion
+            </Text>
             <CurrencyCard totalKzt={totalMedicalExpenses} />
           </View>
         </View>
@@ -207,7 +238,6 @@ export default function HomeScreen({ onNavigate }: HomeScreenProps) {
                 >
                   {item.day}
                 </Text>
-
                 <Text
                   style={[
                     styles.dayName,
@@ -232,7 +262,6 @@ export default function HomeScreen({ onNavigate }: HomeScreenProps) {
                 <Text style={styles.doctorAppointment}>
                   Dr. Olivia Turner, M.D.
                 </Text>
-
                 <Text style={styles.appointmentDescription}>
                   Treatment and prevention of skin and photodermatitis.
                 </Text>
@@ -258,19 +287,13 @@ export default function HomeScreen({ onNavigate }: HomeScreenProps) {
               </View>
 
               <View style={styles.doctorDetails}>
-                <Text style={styles.doctorName}>
-                  {doctor.name}
-                </Text>
-
+                <Text style={styles.doctorName}>{doctor.name}</Text>
                 <Text style={styles.specialty}>
                   {doctor.specialty}
                 </Text>
 
                 <View style={styles.ratingRow}>
-                  <Text style={styles.rating}>
-                    ★ {doctor.rating}
-                  </Text>
-
+                  <Text style={styles.rating}>★ {doctor.rating}</Text>
                   <Text style={styles.reviews}>
                     ◉ {doctor.reviews}
                   </Text>
@@ -326,7 +349,6 @@ export default function HomeScreen({ onNavigate }: HomeScreenProps) {
             >
               {tab.icon}
             </Text>
-
             <Text
               style={[
                 styles.navLabel,
@@ -409,46 +431,119 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   expensesSection: {
-    backgroundColor: '#F4F6FF',
     marginHorizontal: 18,
     marginBottom: 18,
-    padding: 16,
-    borderRadius: 18,
   },
-  expenseTotal: {
-    backgroundColor: '#DCE4FF',
-    padding: 15,
-    borderRadius: 14,
+  expensesHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     marginBottom: 12,
   },
-  expenseLabel: {
-    color: '#526080',
+  expensesTitle: {
+    fontSize: 19,
+    fontWeight: 'bold',
+    color: '#263A70',
+  },
+  addExpenseButton: {
+    backgroundColor: '#3563F5',
+    paddingHorizontal: 15,
+    paddingVertical: 9,
+    borderRadius: 12,
+  },
+  addExpenseButtonText: {
+    color: '#FFFFFF',
+    fontWeight: 'bold',
     fontSize: 13,
   },
-  expenseAmount: {
-    color: '#3563F5',
-    fontSize: 27,
+  totalCard: {
+    backgroundColor: '#3563F5',
+    borderRadius: 18,
+    padding: 18,
+    marginBottom: 12,
+  },
+  totalLabel: {
+    color: '#DCE4FF',
+    fontSize: 13,
+  },
+  totalAmount: {
+    color: '#FFFFFF',
+    fontSize: 28,
     fontWeight: 'bold',
+    marginTop: 8,
+  },
+  totalDescription: {
+    color: '#DCE4FF',
+    fontSize: 12,
     marginTop: 5,
+  },
+  expenseList: {
+    backgroundColor: '#F5F7FF',
+    borderRadius: 16,
+    paddingHorizontal: 12,
   },
   expenseItem: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 10,
+    alignItems: 'center',
+    paddingVertical: 13,
     borderBottomWidth: 1,
-    borderBottomColor: '#E1E6F5',
+    borderBottomColor: '#E2E8FF',
   },
-  expenseTitle: {
-    color: '#263A70',
-    fontSize: 13,
+  expenseIcon: {
+    width: 38,
+    height: 38,
+    borderRadius: 12,
+    backgroundColor: '#DCE4FF',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-  expensePrice: {
+  expenseIconText: {
     color: '#3563F5',
+    fontSize: 20,
+  },
+  expenseDetails: {
+    flex: 1,
+    marginLeft: 10,
+  },
+  expenseName: {
+    color: '#263A70',
     fontWeight: 'bold',
     fontSize: 13,
   },
-  currencyContainer: {
-    marginTop: 15,
+  expenseCategory: {
+    color: '#8995B8',
+    fontSize: 11,
+    marginTop: 4,
+  },
+  expenseAmount: {
+    color: '#3563F5',
+    fontSize: 13,
+    fontWeight: 'bold',
+  },
+  emptyExpenses: {
+    backgroundColor: '#F5F7FF',
+    borderRadius: 16,
+    padding: 20,
+    alignItems: 'center',
+  },
+  emptyExpensesText: {
+    color: '#263A70',
+    fontWeight: 'bold',
+    fontSize: 14,
+  },
+  emptyExpensesDescription: {
+    color: '#8995B8',
+    fontSize: 12,
+    marginTop: 5,
+  },
+  currencySection: {
+    marginTop: 18,
+  },
+  currencyTitle: {
+    color: '#263A70',
+    fontWeight: 'bold',
+    fontSize: 16,
+    marginBottom: 10,
   },
   searchBox: {
     flexDirection: 'row',
