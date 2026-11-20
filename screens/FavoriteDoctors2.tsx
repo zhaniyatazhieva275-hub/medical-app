@@ -1,0 +1,187 @@
+import React from 'react';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, SafeAreaView } from 'react-native';
+
+const FAVORITE_DOCTORS_2 = [
+  {
+    id: '1',
+    name: 'Dr. Alina Sholpan',
+    specialty: 'Dermatologist',
+    rating: '4.9',
+    reviews: '812 reviews',
+    hospital: 'Astana Medical Center',
+  },
+  {
+    id: '2',
+    name: 'Dr. Damir Kassym',
+    specialty: 'Neurologist',
+    rating: '4.8',
+    reviews: '634 reviews',
+    hospital: 'National Hospital',
+  },
+  {
+    id: '3',
+    name: 'Dr. Zhanar Kairat',
+    specialty: 'Pediatrician',
+    rating: '5.0',
+    reviews: '1,102 reviews',
+    hospital: 'Family Health Clinic',
+  },
+];
+
+export default function FavoriteDoctors2() {
+  return (
+    <SafeAreaView style={styles.container}>
+      {/* Жоғарғы тақырып */}
+      <View style={styles.header}>
+        <TouchableOpacity style={styles.backButton}>
+          <Text style={styles.backIcon}>←</Text>
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Favorite Doctors (2)</Text>
+        <TouchableOpacity style={styles.filterBtn}>
+          <Text style={styles.filterIcon}>⚙️</Text>
+        </TouchableOpacity>
+      </View>
+
+      {/* Тізім */}
+      <View style={styles.content}>
+        <FlatList
+          data={FAVORITE_DOCTORS_2}
+          keyExtractor={(item) => item.id}
+          showsVerticalScrollIndicator={false}
+          renderItem={({ item }) => (
+            <View style={styles.card}>
+              <View style={styles.avatarBox} />
+              <View style={styles.infoBox}>
+                <View style={styles.topRow}>
+                  <Text style={styles.doctorName}>{item.name}</Text>
+                  <TouchableOpacity>
+                    <Text style={styles.heartIcon}>❤️</Text>
+                  </TouchableOpacity>
+                </View>
+                <Text style={styles.doctorSpecialty}>{item.specialty}</Text>
+                <Text style={styles.hospitalText}>{item.hospital}</Text>
+                <View style={styles.footerRow}>
+                  <Text style={styles.rating}>⭐ {item.rating} <Text style={styles.reviews}>({item.reviews})</Text></Text>
+                </View>
+              </View>
+            </View>
+          )}
+        />
+      </View>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+    paddingHorizontal: 20,
+    paddingTop: 10,
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  backButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#F7F8F9',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#EDF1F3',
+  },
+  backIcon: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#1A1C1E',
+  },
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#1A1C1E',
+  },
+  filterBtn: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#F7F8F9',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#EDF1F3',
+  },
+  filterIcon: {
+    fontSize: 16,
+  },
+  content: {
+    flex: 1,
+  },
+  card: {
+    flexDirection: 'row',
+    backgroundColor: '#FFFFFF',
+    padding: 12,
+    borderRadius: 16,
+    marginBottom: 15,
+    borderWidth: 1,
+    borderColor: '#EDF1F3',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.03,
+    shadowRadius: 8,
+    elevation: 2,
+  },
+  avatarBox: {
+    width: 75,
+    height: 75,
+    borderRadius: 12,
+    backgroundColor: '#E8ECEF',
+    marginRight: 15,
+  },
+  infoBox: {
+    flex: 1,
+  },
+  topRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 2,
+  },
+  doctorName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#1A1C1E',
+  },
+  heartIcon: {
+    fontSize: 16,
+  },
+  doctorSpecialty: {
+    fontSize: 13,
+    color: '#0EBE7E',
+    fontWeight: '600',
+    marginBottom: 2,
+  },
+  hospitalText: {
+    fontSize: 12,
+    color: '#717786',
+    marginBottom: 6,
+  },
+  footerRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  rating: {
+    fontSize: 12,
+    fontWeight: 'bold',
+    color: '#1A1C1E',
+  },
+  reviews: {
+    fontWeight: 'normal',
+    color: '#717786',
+  },
+});
