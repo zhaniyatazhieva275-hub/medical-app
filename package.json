@@ -3,11 +3,18 @@
   "version": "1.0.0",
   "main": "index.ts",
   "dependencies": {
+<<<<<<< HEAD
     "@expo/vector-icons": "^15.0.2",
     "expo": "~58.0.25",
     "expo-status-bar": "~58.0.5",
     "react": "19.3.0",
     "react-native": "0.88.1"
+=======
+    "expo": "~58.0.19",
+    "expo-status-bar": "~58.0.4",
+    "react": "19.3.0",
+    "react-native": "0.88.0"
+>>>>>>> fc85d385b840503fef3062eda0f7f84d420fc73e
   },
   "devDependencies": {
     "@types/react": "~19.3.0",

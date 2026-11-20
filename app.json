@@ -20,9 +20,13 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
+<<<<<<< HEAD
     },
     "plugins": [
       "expo-status-bar"
     ]
+=======
+    }
+>>>>>>> fc85d385b840503fef3062eda0f7f84d420fc73e
   }
 }

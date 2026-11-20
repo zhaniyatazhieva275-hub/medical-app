@@ -14,6 +14,7 @@ type Props = {
 export default function LoginScreen({ onNavigate }: Props) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+<<<<<<< HEAD
   const [error, setError] = useState('');
 
   const handleLogin = () => {
@@ -25,6 +26,8 @@ export default function LoginScreen({ onNavigate }: Props) {
     setError('');
     onNavigate('home');
   };
+=======
+>>>>>>> fc85d385b840503fef3062eda0f7f84d420fc73e
 
   return (
     <View style={styles.container}>
@@ -46,10 +49,14 @@ export default function LoginScreen({ onNavigate }: Props) {
         keyboardType="email-address"
         autoCapitalize="none"
         value={email}
+<<<<<<< HEAD
         onChangeText={(value) => {
           setEmail(value);
           setError('');
         }}
+=======
+        onChangeText={setEmail}
+>>>>>>> fc85d385b840503fef3062eda0f7f84d420fc73e
       />
 
       <Text style={styles.label}>Password</Text>
@@ -59,10 +66,14 @@ export default function LoginScreen({ onNavigate }: Props) {
         placeholderTextColor="#9AA6BA"
         secureTextEntry
         value={password}
+<<<<<<< HEAD
         onChangeText={(value) => {
           setPassword(value);
           setError('');
         }}
+=======
+        onChangeText={setPassword}
+>>>>>>> fc85d385b840503fef3062eda0f7f84d420fc73e
       />
 
       <TouchableOpacity
@@ -72,6 +83,7 @@ export default function LoginScreen({ onNavigate }: Props) {
         <Text style={styles.forgotText}>Forgot Password?</Text>
       </TouchableOpacity>
 
+<<<<<<< HEAD
       {error !== '' && (
         <Text style={styles.error}>{error}</Text>
       )}
@@ -79,14 +91,29 @@ export default function LoginScreen({ onNavigate }: Props) {
       <TouchableOpacity
         style={styles.button}
         onPress={handleLogin}
+=======
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => {
+          if (email.trim() && password.trim()) {
+            alert('Login screen demo');
+          } else {
+            alert('Please enter your email and password.');
+          }
+        }}
+>>>>>>> fc85d385b840503fef3062eda0f7f84d420fc73e
       >
         <Text style={styles.buttonText}>Log In</Text>
       </TouchableOpacity>
 
       <View style={styles.footer}>
+<<<<<<< HEAD
         <Text style={styles.footerText}>
           Don't have an account?{' '}
         </Text>
+=======
+        <Text style={styles.footerText}>Don't have an account? </Text>
+>>>>>>> fc85d385b840503fef3062eda0f7f84d420fc73e
         <TouchableOpacity onPress={() => onNavigate('signup')}>
           <Text style={styles.link}>Sign Up</Text>
         </TouchableOpacity>
@@ -147,11 +174,14 @@ const styles = StyleSheet.create({
     color: '#3478F6',
     fontWeight: '600',
   },
+<<<<<<< HEAD
   error: {
     color: '#E53935',
     fontSize: 13,
     marginTop: 12,
   },
+=======
+>>>>>>> fc85d385b840503fef3062eda0f7f84d420fc73e
   button: {
     backgroundColor: '#3478F6',
     borderRadius: 12,
