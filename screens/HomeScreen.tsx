@@ -10,6 +10,20 @@ import {
   StatusBar,
 } from 'react-native';
 
+import CurrencyCard from '../components/CurrencyCard';
+
+type MedicalExpense = {
+  id: string;
+  title: string;
+  category: string;
+  amount: number;
+};
+
+type HomeScreenProps = {
+  onNavigate: (screen: string) => void;
+  expenses: MedicalExpense[];
+};
+
 const doctors = [
   {
     id: 1,
@@ -49,15 +63,24 @@ const doctors = [
   },
 ];
 
-export default function HomeScreen() {
+export default function HomeScreen({
+  onNavigate,
+  expenses,
+}: HomeScreenProps) {
   const [search, setSearch] = useState('');
   const [selectedDay, setSelectedDay] = useState(11);
   const [favorites, setFavorites] = useState<number[]>([]);
   const [activeTab, setActiveTab] = useState('Home');
 
-  const filteredDoctors = doctors.filter((doctor) =>
-    doctor.name.toLowerCase().includes(search.toLowerCase()) ||
-    doctor.specialty.toLowerCase().includes(search.toLowerCase())
+  const filteredDoctors = doctors.filter(
+    (doctor) =>
+      doctor.name.toLowerCase().includes(search.toLowerCase()) ||
+      doctor.specialty.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const totalMedicalExpenses = expenses.reduce(
+    (total, expense) => total + expense.amount,
+    0
   );
 
   const toggleFavorite = (id: number) => {
@@ -70,10 +93,9 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor="#FFFFFF" />
+      <StatusBar barStyle="dark-content" />
 
       <ScrollView showsVerticalScrollIndicator={false}>
-        {/* Header */}
         <View style={styles.header}>
           <View style={styles.avatar}>
             <Text style={styles.avatarText}>JD</Text>
@@ -84,29 +106,123 @@ export default function HomeScreen() {
             <Text style={styles.userName}>John Doe</Text>
           </View>
 
-          <TouchableOpacity style={styles.headerButton}>
+          <TouchableOpacity
+            style={styles.headerButton}
+            onPress={() => onNavigate('notifications')}
+          >
             <Text style={styles.headerIcon}>♧</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.headerButton}>
+          <TouchableOpacity
+            style={styles.headerButton}
+            onPress={() => onNavigate('profile')}
+          >
             <Text style={styles.headerIcon}>⚙</Text>
           </TouchableOpacity>
         </View>
 
-        {/* Doctors and Favorites */}
         <View style={styles.quickActions}>
-          <TouchableOpacity style={styles.quickButton}>
+          <TouchableOpacity
+            style={styles.quickButton}
+            onPress={() => onNavigate('appointment')}
+          >
             <Text style={styles.quickIcon}>♧</Text>
             <Text style={styles.quickText}>Doctors</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.quickButton}>
+          <TouchableOpacity
+            style={styles.quickButton}
+            onPress={() => onNavigate('profile')}
+          >
             <Text style={styles.quickIcon}>♡</Text>
             <Text style={styles.quickText}>Favorite</Text>
           </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.quickButton}
+            onPress={() => onNavigate('addExpense')}
+          >
+            <Text style={styles.quickIcon}>＋</Text>
+            <Text style={styles.quickText}>Add expense</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.quickButton}
+            onPress={() => onNavigate('payment')}
+          >
+            <Text style={styles.quickIcon}>💳</Text>
+            <Text style={styles.quickText}>Payment</Text>
+          </TouchableOpacity>
         </View>
 
-        {/* Search */}
+        <View style={styles.expensesSection}>
+          <View style={styles.expensesHeader}>
+            <Text style={styles.expensesTitle}>Medical Expenses</Text>
+
+            <TouchableOpacity
+              style={styles.addExpenseButton}
+              onPress={() => onNavigate('addExpense')}
+            >
+              <Text style={styles.addExpenseButtonText}>+ Add</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.totalCard}>
+            <Text style={styles.totalLabel}>
+              Total medical expenses
+            </Text>
+
+            <Text style={styles.totalAmount}>
+              {totalMedicalExpenses.toLocaleString('ru-RU')} ₸
+            </Text>
+
+            <Text style={styles.totalDescription}>
+              {expenses.length} expense(s) added
+            </Text>
+          </View>
+
+          {expenses.length > 0 ? (
+            <View style={styles.expenseList}>
+              {expenses.map((expense) => (
+                <View key={expense.id} style={styles.expenseItem}>
+                  <View style={styles.expenseIcon}>
+                    <Text style={styles.expenseIconText}>✚</Text>
+                  </View>
+
+                  <View style={styles.expenseDetails}>
+                    <Text style={styles.expenseName}>
+                      {expense.title}
+                    </Text>
+                    <Text style={styles.expenseCategory}>
+                      {expense.category}
+                    </Text>
+                  </View>
+
+                  <Text style={styles.expenseAmount}>
+                    {expense.amount.toLocaleString('ru-RU')} ₸
+                  </Text>
+                </View>
+              ))}
+            </View>
+          ) : (
+            <View style={styles.emptyExpenses}>
+              <Text style={styles.emptyExpensesText}>
+                No expenses yet.
+              </Text>
+              <Text style={styles.emptyExpensesDescription}>
+                Add your first medical expense.
+              </Text>
+            </View>
+          )}
+
+          <View style={styles.currencySection}>
+            <Text style={styles.currencyTitle}>
+              Currency conversion
+            </Text>
+            <CurrencyCard totalKzt={totalMedicalExpenses} />
+          </View>
+        </View>
+
         <View style={styles.searchBox}>
           <Text style={styles.searchIcon}>⌕</Text>
           <TextInput
@@ -118,7 +234,6 @@ export default function HomeScreen() {
           />
         </View>
 
-        {/* Calendar */}
         <View style={styles.calendarSection}>
           <Text style={styles.sectionTitle}>November 2026</Text>
 
@@ -147,6 +262,7 @@ export default function HomeScreen() {
                 >
                   {item.day}
                 </Text>
+
                 <Text
                   style={[
                     styles.dayName,
@@ -159,7 +275,6 @@ export default function HomeScreen() {
             ))}
           </View>
 
-          {/* Appointment */}
           <View style={styles.appointment}>
             <Text style={styles.appointmentTitle}>
               {selectedDay} November - Appointment
@@ -180,7 +295,6 @@ export default function HomeScreen() {
           </View>
         </View>
 
-        {/* Doctors List */}
         <View style={styles.doctorsSection}>
           <Text style={styles.sectionTitle}>Popular Doctors</Text>
 
@@ -216,21 +330,18 @@ export default function HomeScreen() {
                 style={styles.favoriteButton}
               >
                 <Text style={styles.favoriteIcon}>
-                  {favorites.includes(doctor.id) ? '♥' : '♡'}
+                  {favorites.includes(doctor.id) ? '♥️' : '♡'}
                 </Text>
               </TouchableOpacity>
             </View>
           ))}
 
           {filteredDoctors.length === 0 && (
-            <Text style={styles.emptyText}>
-              No doctors found.
-            </Text>
+            <Text style={styles.emptyText}>No doctors found.</Text>
           )}
         </View>
       </ScrollView>
 
-      {/* Bottom Navigation */}
       <View style={styles.bottomNav}>
         {[
           { name: 'Home', icon: '⌂' },
@@ -241,7 +352,25 @@ export default function HomeScreen() {
           <TouchableOpacity
             key={tab.name}
             style={styles.navItem}
-            onPress={() => setActiveTab(tab.name)}
+            onPress={() => {
+              setActiveTab(tab.name);
+
+              if (tab.name === 'Home') {
+                onNavigate('home');
+              }
+
+              if (tab.name === 'Messages') {
+                onNavigate('notifications');
+              }
+
+              if (tab.name === 'Profile') {
+                onNavigate('profile');
+              }
+
+              if (tab.name === 'Calendar') {
+                onNavigate('appointment');
+              }
+            }}
           >
             <Text
               style={[
@@ -251,6 +380,7 @@ export default function HomeScreen() {
             >
               {tab.icon}
             </Text>
+
             <Text
               style={[
                 styles.navLabel,
@@ -318,7 +448,7 @@ const styles = StyleSheet.create({
   quickActions: {
     flexDirection: 'row',
     paddingHorizontal: 18,
-    gap: 25,
+    justifyContent: 'space-between',
     marginBottom: 15,
   },
   quickButton: {
@@ -330,7 +460,122 @@ const styles = StyleSheet.create({
   },
   quickText: {
     color: '#3563F5',
+    fontSize: 11,
+  },
+  expensesSection: {
+    marginHorizontal: 18,
+    marginBottom: 18,
+  },
+  expensesHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  expensesTitle: {
+    fontSize: 19,
+    fontWeight: 'bold',
+    color: '#263A70',
+  },
+  addExpenseButton: {
+    backgroundColor: '#3563F5',
+    paddingHorizontal: 15,
+    paddingVertical: 9,
+    borderRadius: 12,
+  },
+  addExpenseButtonText: {
+    color: '#FFFFFF',
+    fontWeight: 'bold',
+    fontSize: 13,
+  },
+  totalCard: {
+    backgroundColor: '#3563F5',
+    borderRadius: 18,
+    padding: 18,
+    marginBottom: 12,
+  },
+  totalLabel: {
+    color: '#DCE4FF',
+    fontSize: 13,
+  },
+  totalAmount: {
+    color: '#FFFFFF',
+    fontSize: 28,
+    fontWeight: 'bold',
+    marginTop: 8,
+  },
+  totalDescription: {
+    color: '#DCE4FF',
     fontSize: 12,
+    marginTop: 5,
+  },
+  expenseList: {
+    backgroundColor: '#F5F7FF',
+    borderRadius: 16,
+    paddingHorizontal: 12,
+  },
+  expenseItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 13,
+    borderBottomWidth: 1,
+    borderBottomColor: '#E2E8FF',
+  },
+  expenseIcon: {
+    width: 38,
+    height: 38,
+    borderRadius: 12,
+    backgroundColor: '#DCE4FF',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  expenseIconText: {
+    color: '#3563F5',
+    fontSize: 20,
+  },
+  expenseDetails: {
+    flex: 1,
+    marginLeft: 10,
+  },
+  expenseName: {
+    color: '#263A70',
+    fontWeight: 'bold',
+    fontSize: 13,
+  },
+  expenseCategory: {
+    color: '#8995B8',
+    fontSize: 11,
+    marginTop: 4,
+  },
+  expenseAmount: {
+    color: '#3563F5',
+    fontSize: 13,
+    fontWeight: 'bold',
+  },
+  emptyExpenses: {
+    backgroundColor: '#F5F7FF',
+    borderRadius: 16,
+    padding: 20,
+    alignItems: 'center',
+  },
+  emptyExpensesText: {
+    color: '#263A70',
+    fontWeight: 'bold',
+    fontSize: 14,
+  },
+  emptyExpensesDescription: {
+    color: '#8995B8',
+    fontSize: 12,
+    marginTop: 5,
+  },
+  currencySection: {
+    marginTop: 18,
+  },
+  currencyTitle: {
+    color: '#263A70',
+    fontWeight: 'bold',
+    fontSize: 16,
+    marginBottom: 10,
   },
   searchBox: {
     flexDirection: 'row',
